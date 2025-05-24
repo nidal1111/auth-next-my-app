@@ -3,6 +3,8 @@ import { comparePasswords, createToken, setSession } from '@/lib/auth';
 import { getUserByEmail } from '@/lib/db';
 import { signInSchema } from '@/lib/validations';
 
+export const runtime = 'nodejs';
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();

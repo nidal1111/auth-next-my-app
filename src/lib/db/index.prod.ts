@@ -1,23 +1,11 @@
-import { drizzle } from 'drizzle-orm/better-sqlite3';
+import { drizzle } from 'drizzle-orm/vercel-postgres';
 import { eq } from 'drizzle-orm';
-import Database from 'better-sqlite3';
-import * as schema from './schema';
+import { sql } from '@vercel/postgres';
+import * as schema from './schema.prod';
 
-const sqlite = new Database('sqlite.db');
-export const db = drizzle(sqlite, { schema });
+export const db = drizzle(sql, { schema });
 
-// Initialize database tables
-sqlite.exec(`
-  CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    email TEXT NOT NULL UNIQUE,
-    password TEXT NOT NULL,
-    name TEXT NOT NULL,
-    created_at INTEGER NOT NULL DEFAULT (unixepoch())
-  )
-`);
-
-// Helper functions
+// Helper functions for user operations
 export async function createUser(email: string, password: string, name: string) {
   const result = await db.insert(schema.users).values({
     email,

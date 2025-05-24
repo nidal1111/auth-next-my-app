@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "db:push:prod": "drizzle-kit push --config=drizzle.config.prod.ts",
+    "db:studio": "drizzle-kit studio",
+    "db:studio:prod": "drizzle-kit studio --config=drizzle.config.prod.ts"
   },
   "dependencies": {
     "@next/env": "^15.1.8",

@@ -185,10 +185,51 @@ To test the application:
 
 ### Vercel (Recommended)
 
-1. Push code to GitHub
-2. Import project on [Vercel](https://vercel.com)
-3. Configure `JWT_SECRET` environment variable
-4. Automatic deployment
+**Important**: This app uses SQLite locally but requires Postgres on Vercel since SQLite doesn't work in serverless environments.
+
+1. **Push code to GitHub**
+
+2. **Import project on [Vercel](https://vercel.com)**
+
+3. **Set up Vercel Postgres** (Required):
+   - Go to your Vercel project dashboard
+   - Navigate to "Storage" tab
+   - Click "Create Database" → Select "Postgres"
+   - Choose a database name and region
+   - This automatically adds all required `POSTGRES_*` environment variables
+
+4. **Add environment variables**:
+   - Go to Settings → Environment Variables
+   - Add `JWT_SECRET`:
+     ```bash
+     # Generate a secure secret locally:
+     openssl rand -base64 32
+     ```
+   - Paste the generated value as `JWT_SECRET`
+
+5. **Deploy the project**:
+   - Vercel will automatically deploy your project
+   - The API routes include `export const runtime = 'nodejs'` for compatibility
+
+6. **Initialize the database** (after first deployment):
+   ```bash
+   # Install Vercel CLI if needed
+   npm i -g vercel
+   
+   # Link to your project
+   vercel link
+   
+   # Pull environment variables
+   vercel env pull .env.local
+   
+   # Run production migration
+   npm run db:push:prod
+   ```
+
+**Troubleshooting**:
+- If you get 405 errors, ensure Vercel Postgres is set up
+- Check that all `POSTGRES_*` variables are present in your Vercel dashboard
+- Verify `JWT_SECRET` is set in environment variables
 
 ### Self-hosting
 

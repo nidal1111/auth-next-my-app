@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
 import { getUserById } from '@/lib/db';
 
+export const runtime = 'nodejs';
+
 export async function GET() {
   const session = await getSession();
   
