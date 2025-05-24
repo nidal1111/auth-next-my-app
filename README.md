@@ -1,36 +1,213 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next.js Authentication App
 
-## Getting Started
+A complete authentication application built with Next.js 15, TypeScript, and SQLite, implementing a secure registration and login system with JWT tokens.
 
-First, run the development server:
+## 🚀 Key Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Complete Authentication**: User registration and login system with email/password
+- **Advanced Security**: 
+  - Password hashing with bcrypt
+  - JWT tokens with 24h expiration
+  - HTTP-only cookies for session management
+- **Route Protection**: Custom middleware to protect private areas
+- **Form Validation**: Schema validation with Zod
+- **Modern UI**: Custom components based on Radix UI and Tailwind CSS
+- **Local Database**: SQLite with Drizzle ORM for simple setup
+
+## 🛠️ Tech Stack
+
+- **Framework**: [Next.js 15.1.8](https://nextjs.org/) with App Router
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Database**: SQLite with [Drizzle ORM](https://orm.drizzle.team/)
+- **Authentication**: JWT ([jose](https://github.com/panva/jose)) + bcryptjs
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **UI Components**: [Radix UI](https://www.radix-ui.com/) + custom components
+- **Validation**: [Zod](https://zod.dev/)
+
+## 📁 Project Structure
+
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── api/auth/          # Authentication API routes
+│   ├── dashboard/         # Protected area
+│   ├── sign-in/          # Login page
+│   └── sign-up/          # Registration page
+├── components/            # Reusable UI components
+│   └── ui/               # Base components (Button, Input, etc.)
+├── lib/                   # Utilities and core logic
+│   ├── auth.ts           # Authentication logic
+│   ├── db/               # Database schema and connection
+│   ├── utils.ts          # Utility functions
+│   └── validations.ts    # Zod validation schemas
+└── middleware.ts          # Route protection
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Installation and Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Prerequisites
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Node.js 18+ 
+- npm, yarn, pnpm, or bun
 
-## Learn More
+### Steps
 
-To learn more about Next.js, take a look at the following resources:
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/nidal1111/auth-next-my-app.git
+   cd auth-next-my-app
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **Install dependencies**
+   ```bash
+   npm install
+   # or
+   yarn install
+   # or
+   pnpm install
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. **Configure environment variables**
+   ```bash
+   cp .env.local.example .env.local
+   ```
+   
+   Generate a secure JWT secret:
+   ```bash
+   openssl rand -base64 32
+   ```
+   
+   Paste the generated value in `.env.local`:
+   ```
+   JWT_SECRET=your_generated_secret
+   ```
 
-## Deploy on Vercel
+4. **Initialize the database**
+   ```bash
+   npm run db:push
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+5. **Start the development server**
+   ```bash
+   npm run dev
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## 🔧 Available Scripts
+
+- `npm run dev` - Start development server with Turbopack
+- `npm run build` - Create production build
+- `npm run start` - Start production server
+- `npm run lint` - Run code linting
+- `npm run db:push` - Sync database schema
+- `npm run db:studio` - Open Drizzle Studio to explore the DB
+
+## 🔐 Security Architecture
+
+### Authentication Flow
+
+1. **Registration**:
+   - User enters email, password, and name
+   - Password is hashed with bcrypt (10 rounds)
+   - User is saved to database
+   - JWT token is generated and stored in HTTP-only cookie
+
+2. **Login**:
+   - Credentials verified against database
+   - Password comparison with bcrypt
+   - JWT token generation with 24h expiration
+   - HTTP-only cookie for session
+
+3. **Route Protection**:
+   - Middleware intercepts requests to `/dashboard`
+   - Verifies JWT token validity
+   - Automatic redirects for unauthenticated users
+
+### Design Decisions
+
+- **JWT over server sessions**: Scalability and statelessness
+- **HTTP-only cookies**: Protection from XSS attacks
+- **SQLite**: Simplicity for development/small apps
+- **Drizzle ORM**: Type-safety and performance
+- **Edge Middleware**: Fast token verification at edge level
+
+## 🎨 UI Components
+
+UI components follow the composition pattern with variants managed by CVA (class-variance-authority):
+
+- **Button**: Supports variants (default, destructive, outline, etc.) and sizes
+- **Input**: Input field with error state support
+- **PasswordInput**: Password input with visibility toggle
+- **Label**: Accessible labels for forms
+
+## 📝 API Endpoints
+
+### POST `/api/auth/sign-up`
+Register a new user.
+
+**Body**:
+```json
+{
+  "email": "user@example.com",
+  "password": "password123",
+  "name": "John Doe"
+}
+```
+
+### POST `/api/auth/sign-in`
+Authenticate an existing user.
+
+**Body**:
+```json
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+```
+
+### POST `/api/auth/logout`
+Terminate the current session.
+
+### GET `/api/auth/me`
+Get authenticated user information.
+
+## 🧪 Testing
+
+To test the application:
+
+1. Register a new account from `/sign-up` page
+2. Login with created credentials
+3. Verify access to protected dashboard
+4. Test logout and route protection
+
+## 🚀 Deployment
+
+### Vercel (Recommended)
+
+1. Push code to GitHub
+2. Import project on [Vercel](https://vercel.com)
+3. Configure `JWT_SECRET` environment variable
+4. Automatic deployment
+
+### Self-hosting
+
+1. Build the project:
+   ```bash
+   npm run build
+   ```
+
+2. Configure environment variables in production
+
+3. Start the server:
+   ```bash
+   npm run start
+   ```
+
+## 🤝 Contributing
+
+1. Fork the project
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
