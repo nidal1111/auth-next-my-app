@@ -191,11 +191,18 @@ To test the application:
 
 2. **Import project on [Vercel](https://vercel.com)**
 
-3. **Set up Vercel Postgres** (Required):
+3. **Set up Database** (Required - Choose one):
+   
+   **Option A: Vercel Postgres**
    - Go to your Vercel project dashboard
    - Navigate to "Storage" tab
    - Click "Create Database" → Select "Postgres"
    - Choose a database name and region
+   
+   **Option B: Supabase** (Alternative)
+   - Go to your Vercel project dashboard
+   - Navigate to "Storage" tab
+   - Click "Create Database" → Select "Supabase"
    - This automatically adds all required `POSTGRES_*` environment variables
 
 4. **Add environment variables**:
